@@ -2,6 +2,7 @@ package org.example.examseatingarrangement.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,6 +16,11 @@ public class Building {
     private List<Room> rooms;
 
     public Building() {}
+
+    public Building(String name) {
+        this.name = name;
+        rooms = new ArrayList<>();
+    }
 
     public Room findRoomWithEnoughSeats(int studentNumber) {
         return rooms.stream()
