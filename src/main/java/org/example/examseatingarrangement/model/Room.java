@@ -22,9 +22,10 @@ public class Room {
     public Room() {
     }
 
-    public Room(String name, int capacity) {
+    public Room(String name, int capacity, Building building) {
         this.name = name;
         this.capacity = capacity;
+        this.building = building;
     }
 
     public Long getId() {
@@ -57,5 +58,13 @@ public class Room {
 
     public void setSeats(List<Seat> seats) {
         this.seats = seats;
+    }
+
+    public Building getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(Building building) {
+        this.building = building;
     }
 }

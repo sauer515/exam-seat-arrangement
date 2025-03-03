@@ -1,8 +1,10 @@
 package org.example.examseatingarrangement.controller;
 
 import org.example.examseatingarrangement.model.Building;
+import org.example.examseatingarrangement.model.Room;
 import org.example.examseatingarrangement.service.BuildingService;
 import org.example.examseatingarrangement.service.impl.BuildingServiceImpl;
+import org.example.examseatingarrangement.service.impl.RoomServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,8 @@ public class BuildingController {
 
     @Autowired
     private BuildingServiceImpl buildingService;
+    @Autowired
+    private RoomServiceImpl roomService;
 
     @GetMapping
     public List<Building> getAllBuildings() {
@@ -45,5 +49,44 @@ public class BuildingController {
         }
         buildingService.deleteById(id);
         return ResponseEntity.ok("Building deleted successfully");
+    }
+
+    @GetMapping("/{id}/room")
+    public ResponseEntity<Room> getRoomFromBuilding(@PathVariable Long id, @RequestParam String roomName) {
+        Building building = buildingService.findById(id);
+        if (building == null) {
+            return ResponseEntity.notFound().build();
+        }
+        Room room = building.findRoomByName(roomName);
+        if (room == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(room);
+    }
+
+    @PostMapping("/{id}/room")
+    public Room addRoomToBuilding(@PathVariable Long id, @RequestBody Room room) {
+        Building building = buildingService.findById(id);
+        if (building == null) {
+            return null;
+        }
+        room.setBuilding(building);
+        building.addRoom(room);
+        return roomService.save(room);
+    }
+
+    @DeleteMapping("{id}/room")
+    public ResponseEntity<String> deleteRoomFromBuilding(@PathVariable Long id, @RequestParam String roomName) {
+        Building building = buildingService.findById(id);
+        if (building == null) {
+            return ResponseEntity.notFound().build();
+        }
+        Room room = building.findRoomByName(roomName);
+        if (room == null) {
+            return ResponseEntity.notFound().build();
+        }
+        building.deleteRoom(room);
+        roomService.deleteById(room.getId());
+        return ResponseEntity.ok("Room successfully deleted");
     }
 }

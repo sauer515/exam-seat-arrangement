@@ -52,4 +52,18 @@ public class Building {
     public void setRooms(List<Room> rooms) {
         this.rooms = rooms;
     }
+
+    public void addRoom(Room room) {
+        if (rooms.contains(room)) throw new EntityExistsException("Room already added");
+        rooms.add(room);
+    }
+
+    public Room findRoomByName(String roomName) {
+        return rooms.stream().filter(room -> roomName.equals(room.getName())).findFirst().orElse(null);
+    }
+
+    public void deleteRoom(Room room) {
+        if (!rooms.contains(room)) throw new EntityNotFoundException("Room not found in the building");
+        rooms.remove(room);
+    }
 }
