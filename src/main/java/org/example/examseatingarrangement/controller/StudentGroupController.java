@@ -1,0 +1,99 @@
+package org.example.examseatingarrangement.controller;
+
+import org.example.examseatingarrangement.model.Exam;
+import org.example.examseatingarrangement.model.Student;
+import org.example.examseatingarrangement.model.StudentGroup;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.example.examseatingarrangement.service.StudentGroupService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("api/student-group")
+public class StudentGroupController {
+    private final StudentGroupService studentGroupService;
+
+    @Autowired
+    public StudentGroupController(StudentGroupService studentGroupService) {
+        this.studentGroupService = studentGroupService;
+    }
+
+    @GetMapping
+    public List<StudentGroup> getAllStudentGroups() {
+        return studentGroupService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<StudentGroup> getStudentGroupById(@PathVariable Long id) {
+        StudentGroup studentGroup = studentGroupService.findById(id);
+        if (studentGroup == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(studentGroup);
+        }
+    }
+
+    @PostMapping("/add")
+    public StudentGroup addStudentGroup(@RequestParam String name, @RequestBody List<Student> students) {
+        if (students == null || students.isEmpty()) {
+            return studentGroupService.save(new StudentGroup(name));
+        }
+        StudentGroup studentGroup = new StudentGroup(name, students);
+        return studentGroupService.save(studentGroup);
+    }
+
+    @PostMapping("/addStudent")
+    public ResponseEntity<StudentGroup> addStudent(@RequestParam Long id, @RequestBody Student student) {
+        if (studentGroupService.findById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        StudentGroup studentGroup = studentGroupService.findById(id);
+        studentGroup.addStudent(student);
+        studentGroupService.save(studentGroup);
+        return ResponseEntity.ok(studentGroup);
+    }
+
+    @PostMapping("/addExam")
+    public ResponseEntity<StudentGroup> addExam(@RequestParam Long id, @RequestBody Exam exam) {
+        if (studentGroupService.findById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        StudentGroup studentGroup = studentGroupService.findById(id);
+        studentGroup.addExam(exam);
+        studentGroupService.save(studentGroup);
+        return ResponseEntity.ok(studentGroup);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteStudentGroup(@PathVariable Long id) {
+        if (studentGroupService.findById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        studentGroupService.deleteById(id);
+        return ResponseEntity.ok("Student group successfully deleted");
+    }
+
+    @DeleteMapping("/{groupId}/student/{studentId}")
+    public ResponseEntity<String> deleteStudent(@PathVariable Long groupId, @PathVariable Long studentId) {
+        try {
+            studentGroupService.removeStudentFromGroup(groupId, studentId);
+            return ResponseEntity.ok("Student successfully deleted from group" + groupId);
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{groupId}/exam/{examId}")
+    public ResponseEntity<String> deleteExam(@PathVariable Long groupId, @PathVariable Long examId) {
+        try {
+            studentGroupService.removeExamFromGroup(groupId, examId);
+            return ResponseEntity.ok("Exam successfully deleted from group");
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+}

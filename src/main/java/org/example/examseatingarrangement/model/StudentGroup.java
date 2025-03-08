@@ -73,4 +73,12 @@ public class StudentGroup {
     public void setStudents(List<Student> students) {
         this.students = students;
     }
+
+    public List<Exam> getExams() {
+        return exams;
+    }
+
+    public void setExams(List<Exam> exams) {
+        this.exams = exams;
+    }
 }

@@ -15,10 +15,14 @@ import java.util.List;
 @RequestMapping("/api/building")
 public class BuildingController {
 
+    private final BuildingServiceImpl buildingService;
+    private final RoomServiceImpl roomService;
+
     @Autowired
-    private BuildingServiceImpl buildingService;
-    @Autowired
-    private RoomServiceImpl roomService;
+    public BuildingController(BuildingServiceImpl buildingService, RoomServiceImpl roomService) {
+        this.buildingService = buildingService;
+        this.roomService = roomService;
+    }
 
     @GetMapping
     public List<Building> getAllBuildings() {
@@ -35,7 +39,7 @@ public class BuildingController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public Building addBuilding(@RequestParam String name) {
         Building building = new Building(name);
         return buildingService.save(building);

@@ -33,4 +33,32 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     public void deleteById(Long id) {
         studentGroupRepository.deleteById(id);
     }
+
+    @Override
+    public void removeStudentFromGroup(Long groupId, Long studentId) {
+        StudentGroup studentGroup = studentGroupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("Student group not found with id: " + groupId));
+
+        boolean removed = studentGroup.getStudents().removeIf(student -> student.getId().equals(studentId));
+
+        if (!removed) {
+            throw new IllegalArgumentException("Student not found in group with id: " + studentId);
+        }
+
+        studentGroupRepository.save(studentGroup);
+    }
+
+    @Override
+    public void removeExamFromGroup(Long groupId, Long examId) {
+        StudentGroup studentGroup = studentGroupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("Student group not found with id: " + groupId));
+
+        boolean removed = studentGroup.getExams().removeIf(exam -> exam.getId().equals(examId));
+
+        if (!removed) {
+            throw new IllegalArgumentException("Exam not found in group with id: " + examId);
+        }
+
+        studentGroupRepository.save(studentGroup);
+    }
 }

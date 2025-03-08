@@ -9,4 +9,6 @@ public interface StudentGroupService {
     StudentGroup findById(Long id);
     StudentGroup save(StudentGroup studentGroup);
     void deleteById(Long id);
+    void removeStudentFromGroup(Long groupId, Long studentId);
+    void removeExamFromGroup(Long groupId, Long examId);
 }
