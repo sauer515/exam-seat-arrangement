@@ -1,5 +1,6 @@
 package org.example.examseatingarrangement.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,6 +8,7 @@ import jakarta.persistence.*;
 public class Student extends User {
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "student_group_id")
     private StudentGroup studentGroup;
 

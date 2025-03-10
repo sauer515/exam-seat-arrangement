@@ -3,6 +3,8 @@ package org.example.examseatingarrangement.controller;
 import org.example.examseatingarrangement.model.Exam;
 import org.example.examseatingarrangement.model.Student;
 import org.example.examseatingarrangement.model.StudentGroup;
+import org.example.examseatingarrangement.service.ExamService;
+import org.example.examseatingarrangement.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +16,14 @@ import java.util.List;
 @RequestMapping("api/student-group")
 public class StudentGroupController {
     private final StudentGroupService studentGroupService;
+    private final StudentService studentService;
+    private final ExamService examService;
 
     @Autowired
-    public StudentGroupController(StudentGroupService studentGroupService) {
+    public StudentGroupController(StudentGroupService studentGroupService, StudentService studentService, ExamService examService) {
         this.studentGroupService = studentGroupService;
+        this.studentService = studentService;
+        this.examService = examService;
     }
 
     @GetMapping
@@ -44,24 +50,36 @@ public class StudentGroupController {
         return studentGroupService.save(studentGroup);
     }
 
+    //todo add passwords hashing before saving
+
     @PostMapping("/addStudent")
     public ResponseEntity<StudentGroup> addStudent(@RequestParam Long id, @RequestBody Student student) {
-        if (studentGroupService.findById(id) == null) {
+        StudentGroup studentGroup = studentGroupService.findById(id);
+        if (studentGroup == null) {
             return ResponseEntity.notFound().build();
         }
-        StudentGroup studentGroup = studentGroupService.findById(id);
+        if (student == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        student.setStudentGroup(studentGroup);
         studentGroup.addStudent(student);
+        studentService.save(student);
         studentGroupService.save(studentGroup);
         return ResponseEntity.ok(studentGroup);
     }
 
     @PostMapping("/addExam")
     public ResponseEntity<StudentGroup> addExam(@RequestParam Long id, @RequestBody Exam exam) {
-        if (studentGroupService.findById(id) == null) {
+        StudentGroup studentGroup = studentGroupService.findById(id);
+        if (studentGroup == null) {
             return ResponseEntity.notFound().build();
         }
-        StudentGroup studentGroup = studentGroupService.findById(id);
+        if (exam == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        exam.setStudentGroup(studentGroup);
         studentGroup.addExam(exam);
+        examService.save(exam);
         studentGroupService.save(studentGroup);
         return ResponseEntity.ok(studentGroup);
     }

@@ -1,5 +1,7 @@
 package org.example.examseatingarrangement.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.Date;
 
@@ -10,9 +12,10 @@ public class Exam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String subject;
-    //private Date date; // to add later
+    //private Date date; // todo add dates
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "student_group_id")
     private StudentGroup studentGroup;
 

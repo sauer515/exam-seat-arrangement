@@ -1,5 +1,6 @@
 package org.example.examseatingarrangement.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,6 +14,8 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
+
+    @JsonIgnore
     private String password;
 
     public User() {

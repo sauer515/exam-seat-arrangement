@@ -1,5 +1,7 @@
 package org.example.examseatingarrangement.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -14,9 +16,11 @@ public class StudentGroup {
     private String name;
 
     @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Student> students;
 
     @OneToMany(mappedBy = "studentGroup", fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<Exam> exams = new ArrayList<>();
 
     public StudentGroup() {
@@ -29,6 +33,7 @@ public class StudentGroup {
 
     public StudentGroup(String name) {
         this.name = name;
+        this.students = new ArrayList<>();
     }
 
     public void addStudent(Student student) {
