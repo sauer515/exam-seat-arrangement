@@ -1,6 +1,7 @@
 package org.example.examseatingarrangement.service.impl;
 
 import org.example.examseatingarrangement.model.Building;
+import org.example.examseatingarrangement.model.Room;
 import org.example.examseatingarrangement.repository.BuildingRepository;
 import org.example.examseatingarrangement.service.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +33,11 @@ public class BuildingServiceImpl implements BuildingService {
     @Override
     public void deleteById(Long id) {
         buildingRepository.deleteById(id);
+    }
+
+    @Override
+    public Room findRoomByName(String name, Long buildingId) {
+        Building building = buildingRepository.findById(buildingId).orElse(null);
+        return building != null ? building.findRoomByName(name) : null;
     }
 }

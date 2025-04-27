@@ -61,7 +61,7 @@ public class BuildingController {
         if (building == null) {
             return ResponseEntity.notFound().build();
         }
-        Room room = building.findRoomByName(roomName);
+        Room room = buildingService.findRoomByName(roomName, id);
         if (room == null) {
             return ResponseEntity.notFound().build();
         }
@@ -82,14 +82,11 @@ public class BuildingController {
     @DeleteMapping("{id}/room")
     public ResponseEntity<String> deleteRoomFromBuilding(@PathVariable Long id, @RequestParam String roomName) {
         Building building = buildingService.findById(id);
-        if (building == null) {
-            return ResponseEntity.notFound().build();
-        }
-        Room room = building.findRoomByName(roomName);
+        Room room = buildingService.findRoomByName(roomName, id);
         if (room == null) {
             return ResponseEntity.notFound().build();
         }
-        building.deleteRoom(room);
+        //building.deleteRoom(room);
         roomService.deleteById(room.getId());
         return ResponseEntity.ok("Room successfully deleted");
     }
