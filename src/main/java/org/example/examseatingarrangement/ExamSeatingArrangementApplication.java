@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ExamSeatingArrangementApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ExamSeatingArrangementApplication.class, args);
+        throw new IllegalArgumentException("Intentional expension");
+        //  SpringApplication.run(ExamSeatingArrangementApplication.class, args);
     }
 
 }
